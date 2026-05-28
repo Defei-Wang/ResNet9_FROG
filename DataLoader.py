@@ -9,6 +9,7 @@ from sklearn.model_selection import train_test_split
 
 seeding = 42
 
+# 图像预处理：灰度图输入后会自动变为 [1, H, W] 的张量
 transforms_config = transforms.Compose([
     transforms.Resize((256, 256)),
     transforms.ToTensor()
@@ -34,12 +35,15 @@ class FROGdata(Dataset):
         return len(self.data)
 
     def __getitem__(self, index):
-        # 1. Image Loading and Preprocessing
+        # ==========================================
+        # 1. 图像加载与灰度降维 (彻底剔除 RGB 冗余)
+        # ==========================================
         raw_id = str(self.data.iloc[index, 0]).zfill(5)
         img_path_shg = os.path.join(self.img_dir_shg, f"shg_{raw_id}.png")
         img_path_thg = os.path.join(self.img_dir_thg, f"thg_{raw_id}.png")
 
         try:
+            # 强制转换为 'L' (8-bit 单通道灰度)
             image_shg = Image.open(img_path_shg).convert('L')
             image_thg = Image.open(img_path_thg).convert('L')
         except Exception as e:
@@ -50,9 +54,12 @@ class FROGdata(Dataset):
             image_shg = self.transforms(image_shg)
             image_thg = self.transforms(image_thg)
 
+        # 拼接后张量维度为 [2, 256, 256]
         dual_channel_image = torch.cat((image_shg, image_thg), dim=0)
 
-        # 2. Extract Real and Imaginary Data from CSV
+        # ==========================================
+        # 2. 提取物理 CSV 数据
+        # ==========================================
         row = self.data.iloc[index]
         
         real = row[[f'real_{i}' for i in range(256)]].values.astype(np.float64)
@@ -60,19 +67,24 @@ class FROGdata(Dataset):
         
         complex_E = real + 1j * imag
         
-        # 3. Dynamic Phase Anchoring and Centering
+        # ==========================================
+        # 3. 刚性时域平移与相位锚定
+        # ==========================================
         abs_E = np.abs(complex_E)
         peak_idx = np.argmax(abs_E)
 
-        # Center the peak to index 128
+        # 消除时间平移歧义：对齐到索引 128
         shift_amount = 128 - peak_idx
         complex_E = np.roll(complex_E, shift_amount)
 
-        # Anchor phase at index 128
+        # 消除载波相位歧义：中心点虚部强制归零
         global_phase = np.angle(complex_E[128])
         anchored_E = complex_E * np.exp(-1j * global_phase)
 
-        # 4. Repackage into Target Tensor
+        # ==========================================
+        # 4. 封装回归目标张量
+        # ==========================================
+        # 自动拼接为 512 维的一维向量 (实部256 + 虚部256)
         final_points = np.concatenate([np.real(anchored_E), np.imag(anchored_E)])
         points = torch.tensor(final_points, dtype=torch.float32)
 
