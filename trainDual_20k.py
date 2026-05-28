@@ -70,7 +70,7 @@ if __name__ == '__main__':
     # ==========================================
     # 4. 初始化模型 (6 通道)
     # ==========================================
-    model = resnet9_with_attention(6, 64, 512).to(device) 
+    model = resnet9_with_attention(2, 64, 512).to(device) 
 
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
