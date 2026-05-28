@@ -184,8 +184,8 @@ for idx in tqdm(range(NUM_SAMPLES), desc="Generating 20k Balanced Pulses"):
     sh_img = (trace_sh_interp * 255).astype(np.uint8)
     th_img = (trace_th_interp * 255).astype(np.uint8)
     
-    plt.imsave(os.path.join(SHG_DIR, f"shg_{idx:05d}.png"), sh_img, cmap='hot')
-    plt.imsave(os.path.join(THG_DIR, f"thg_{idx:05d}.png"), th_img, cmap='hot')
+    plt.imsave(os.path.join(SHG_DIR, f"shg_{idx:05d}.png"), sh_img, cmap='gray')
+    plt.imsave(os.path.join(THG_DIR, f"thg_{idx:05d}.png"), th_img, cmap='gray')
 
     # 生成前 20 张物理预览图
     if idx < 20:
@@ -213,14 +213,14 @@ for idx in tqdm(range(NUM_SAMPLES), desc="Generating 20k Balanced Pulses"):
         ax1.set_title(f'Sample {idx:05d}: |E| & Smooth Phase')
         
         # 2. SHG FROG
-        im1 = axes[1].imshow(trace_sh_interp.T, origin='lower', aspect='auto', cmap='hot',
+        im1 = axes[1].imshow(trace_sh_interp.T, origin='lower', aspect='auto', cmap='gray',
                              extent=[new_delays[0], new_delays[-1], new_wl_sh[0]*1e9, new_wl_sh[-1]*1e9])
         axes[1].set_title('SHG FROG Trace')
         axes[1].set_xlabel('Delay (fs)')
         axes[1].set_ylabel('Wavelength (nm)')
         
         # 3. THG FROG
-        im2 = axes[2].imshow(trace_th_interp.T, origin='lower', aspect='auto', cmap='hot',
+        im2 = axes[2].imshow(trace_th_interp.T, origin='lower', aspect='auto', cmap='gray',
                              extent=[new_delays[0], new_delays[-1], new_wl_th[0]*1e9, new_wl_th[-1]*1e9])
         axes[2].set_title('THG FROG Trace')
         axes[2].set_xlabel('Delay (fs)')
