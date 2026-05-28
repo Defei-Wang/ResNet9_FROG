@@ -140,7 +140,7 @@ for idx in tqdm(range(NUM_SAMPLES), desc="Generating 20k Balanced Pulses"):
         smooth_phase = applied_phase - applied_phase[peak_idx]
 
         # ========================================================
-        # 提前模拟 Dataholder 的 roll 操作
+        # 提前模拟 Dataloader 的 roll 操作
         # ========================================================
         E_sim_rolled = np.roll(E, 128 - peak_idx) 
         abs_rolled = np.abs(E_sim_rolled) / np.abs(E_sim_rolled).max()
