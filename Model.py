@@ -112,8 +112,9 @@ class resnet9_with_attention(nn.Module):
 
     def forward(self, img):
 
-        img1 = img[:, :3, :, :]  # First 3 channels
-        img2 = img[:, 3:, :, :]  # Last 3 channels
+        # 【修改后】(精准切分第 0 通道和第 1 通道，保持张量的 4D 结构 [B, 1, H, W])
+        img1 = img[:, 0:1, :, :]  # 取第 0 通道 (SHG)
+        img2 = img[:, 1:2, :, :]  # 取第 1 通道 (THG)
         #
         attn_map = self.attention(img2)
         img2_attended = img2 * attn_map  #
