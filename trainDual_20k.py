@@ -14,7 +14,7 @@ cudnn.benchmark = True
 
 # 导入网络与数据集类
 from Model import resnet9_with_attention 
-from Dataholder import FROGdata 
+from DataLoader import FROGdata 
 
 # ==========================================
 # 0. 全局随机种子对齐

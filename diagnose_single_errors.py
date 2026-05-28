@@ -4,7 +4,7 @@ import pandas as pd
 import os
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
-from Dataholder import FROGdata
+from DataLoader import FROGdata
 from Model import resnet9_with_attention
 from sklearn.metrics import mean_squared_error
 from FROG_Utils import get_phys_props, get_time_axis 

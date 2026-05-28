@@ -9,7 +9,7 @@ import matplotlib.gridspec as gridspec
 from torch.utils.data import DataLoader
 import random
 from Model import resnet9_with_attention 
-from Dataholder import FROGdata 
+from DataLoader import FROGdata 
 from FROG_Utils import get_phys_props, get_time_axis
 
 # ==========================================

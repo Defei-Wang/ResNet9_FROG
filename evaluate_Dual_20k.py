@@ -8,7 +8,7 @@ from torch.utils.data import DataLoader
 
 
 from Model import resnet9_with_attention 
-from Dataholder import FROGdata 
+from DataLoader import FROGdata 
 # 👇 直接从工具箱召唤魔法，告别冗余代码
 from FROG_Utils import get_phys_props, get_time_axis 
 

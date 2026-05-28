@@ -22,11 +22,11 @@ time_axis = np.linspace(-TIME_WINDOW_FS / 2, TIME_WINDOW_FS / 2, N_GRID)
 
 
 # ==========================================
-# 锚定函数：与 Dataholder.py __getitem__ 完全对齐
+# 锚定函数：与 DataLoader.py __getitem__ 完全对齐
 # ==========================================
 def anchor_pulse(real, imag, mask_threshold=0.05):
     """
-    执行与 Dataholder 完全一致的锚定：
+    执行与 DataLoader 完全一致的锚定：
       1. 时间中心对齐：最高峰滚动到索引 128
       2. 全局相位归零：最高峰处 Im=0, Re>0
       3. 振幅归一化
@@ -38,7 +38,7 @@ def anchor_pulse(real, imag, mask_threshold=0.05):
     abs_E = np.abs(complex_E)
     peak_idx = np.argmax(abs_E)
 
-    # 步骤1：时间中心对齐（与 Dataholder 一致，先 roll）
+    # 步骤1：时间中心对齐（与 DataLoader 一致，先 roll）
     shift = 128 - peak_idx
     complex_E = np.roll(complex_E, shift)
 

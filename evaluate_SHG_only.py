@@ -10,7 +10,7 @@ import random # 确保导入了 random 模块
 from torch.utils.data import DataLoader
 
 from Model import resnet9_with_attention 
-from Dataholder import FROGdata 
+from DataLoader import FROGdata 
 from FROG_Utils import get_phys_props, get_time_axis
 # ==========================================
 # 0. 锁定随机种子 

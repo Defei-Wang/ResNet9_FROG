@@ -8,7 +8,7 @@ import csv
 import numpy as np
 
 from Model import resnet9_with_attention 
-from Dataholder import FROGdata 
+from DataLoader import FROGdata 
 
 # ==========================================
 # 0. 全局随机种子对齐 (保证公平对决)
