@@ -40,8 +40,8 @@ class FROGdata(Dataset):
         img_path_thg = os.path.join(self.img_dir_thg, f"thg_{raw_id}.png")
 
         try:
-            image_shg = Image.open(img_path_shg).convert('RGB')
-            image_thg = Image.open(img_path_thg).convert('RGB')
+            image_shg = Image.open(img_path_shg).convert('L')
+            image_thg = Image.open(img_path_thg).convert('L')
         except Exception as e:
             print(f"⚠️ 无法读取图像: {img_path_shg}, 跳过. 错误: {e}")
             return self.__getitem__((index + 1) % len(self.data))
