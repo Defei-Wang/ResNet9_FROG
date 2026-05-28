@@ -1,128 +1,149 @@
-# ResNet9_FROG
-这是一个符合资深程序员规范、高信息密度且完全移除Emoji的 `README.md` 源码。针对 GitHub Markdown 的特性，顶端配置了中英双语的跳转锚点链接，方便一键切换阅读。
-
 ```markdown
-# FROG_DL_Project
-
-[中文说明](#中文说明) | [English Description](#english-description)
+[English Version](#english-version) | [中文版](#中文版)
 
 ---
 
-## 中文说明
+# 中文版
 
-本项目基于深度学习（ResNet9 与注意力机制复合架构）实现超快激光脉冲二阶（SHG）与三阶（THG）频率分辨光学门控（FROG）迹线的非迭代、实时时域复电场快速反演。
+## ResNet9-FROG 脉冲反演系统
 
-### 核心代码结构
+本项目为基于 ResNet9 与双通道空间注意力机制的飞秒激光脉冲频率分辨光学门控（FROG）相位恢复系统。实现从二维非线性时频迹线到一维复电场（实虚部）的正交回归。
 
-| 文件名 | 模块类型 | 核心功能与物理/工程意义 |
-| :--- | :--- | :--- |
-| `Model.py` | 模型架构 | 核心网络定义。包含前置双分支独立空间注意力机制与深度降维的 ResNet9 主干，末端采用实虚部正交分解回归头，规避相位包裹。 |
-| `Dataholder.py` | 数据管线 | 继承 PyTorch Dataset。内嵌动态相位锚定与能量主峰时域中心对准算子，消除平移二义性，保障训练收敛。 |
-| `FROG_Utils.py` | 工具函数 | 包含物理仿真基础算子、信号流向转换及损失函数评估模块。 |
-| `generate_20k_dataset.py` | 数据生成 | 注入高阶色散与多项式复振幅调制的脉冲仿真管线。包含 10 阶超高斯窗截断与 Pre-roll 边界验证，清除 DFT 环绕伪影。 |
-| `trainDual_20k.py` | 算法训练 | 双通道（SHG + THG）联合反演模型训练脚本，引入带温重启的余弦退火学习率调度器。 |
-| `evaluate_Dual_20k.py` | 性能评估 | 评估测试集推理延迟、吞吐量（FPS）及均方误差（MSE）分布，支持 CPU 极限基准性能测试。 |
-| `plot_final_ablation.py` | 论文绘图 | 全自动读取日志，生成双通道与单通道（SHG-only）对比的消融实验科学图表。 |
+### 1. 核心模块
+系统底层逻辑由以下三个基准脚本构成：
+* `Model.py`: 定义深度学习网络拓扑（包含 ResNet9 主干、双通道注意力分流、直角坐标回归头）。
+* `Dataholder.py`: 负责张量转换、动态相位锚定及 DataLoader 批处理管线。
+* `FROG_Utils.py`: 物理计算引擎，包含脉冲生成、高阶啁啾调制、及 DFT 抗混叠加窗算子。
 
-### 执行工作流与运行顺序
+### 2. 标准运行流水线
+请严格按照以下顺序执行脚本以复现系统功能：
 
-请严格按照以下顺序执行脚本：
-
-1. **生成训练数据**
-   ```bash
-   python generate_20k_dataset.py
-   python generate_test_dataset.py
-
-```
-
-*说明：将在本地构建包含严格物理约束的 `dataset_20k` 与测试集。*
-
-2. **执行模型训练**
-```bash
-python trainDual_20k.py
-python train_SHG_only_20k.py
-
-```
-
-
-*说明：启动双通道网络与消融对照组的训练，权重及损失曲线自动输出至各自的 `logs` 文件夹。*
-3. **系统性能评估与量化测速**
-```bash
-python evaluate_Dual_20k.py
-python evaluate_SHG_only.py
-
-```
-
-
-*说明：测试纯 CPU 或 GPU 环境下的单张推理延迟及 FPS。*
-4. **误差诊断与论文绘图**
-```bash
-python diagnose_dual_errors.py
-python plot_final_ablation.py
-
-```
-
-
-*说明：捕获并归档离群坏样本（Bad Samples），同时全自动编译输出毕业论文所需的高清实验图表至 `final_thesis_plots`。*
-
----
-
-## English Description
-
-This project implements a non-iterative, real-time retrieval system for ultra-fast laser pulses from Second-Harmonic Generation (SHG) and Third-Harmonic Generation (THG) Frequency-Resolved Optical Gating (FROG) traces based on a deep learning architecture (ResNet9 combined with Spatial Attention).
-
-### Core Architecture
-
-| File Name | Module Type | Key Functionality & Significance |
-| --- | --- | --- |
-| `Model.py` | Architecture | Core network definition. Features dual-branch independent spatial attention modules, a ResNet9 backbone, and an orthogonal regression head splitting real/imaginary components to bypass phase-wrapping. |
-| `Dataholder.py` | Data Pipeline | PyTorch Dataset implementation. Integrates dynamic phase anchoring and peak-centering operators to eliminate temporal shift ambiguities and stabilize convergence. |
-| `FROG_Utils.py` | Utilities | Contains non-linear optics simulation primitives, signal tensor transforms, and customized loss evaluation modules. |
-| `generate_20k_dataset.py` | Data Engine | Pulse simulation engine injecting high-order dispersion and polynomial amplitude modulation. Deploys 10th-order super-Gaussian windowing and pre-roll boundary verification to clear DFT wrap-around artifacts. |
-| `trainDual_20k.py` | Optimization | Training script for the dual-channel retrival model, regulated by a Cosine Annealing with Warm Restarts learning rate scheduler. |
-| `evaluate_Dual_20k.py` | Evaluation | Assesses inference latency, throughput (FPS), and MSE distribution over test sets, supporting pure CPU performance benchmarking. |
-| `plot_final_ablation.py` | Visualization | Automatically processes logs to generate publication-grade charts for ablation analysis (Dual-channel vs. SHG-only). |
-
-### Execution Workflow
-
-Execute scripts strictly in the following sequential order:
-
-1. **Synthesize Physical Datasets**
+**Step 1: 物理数据生成**
 ```bash
 python generate_20k_dataset.py
-python generate_test_dataset.py
 
 ```
 
+> 生成包含多峰碎裂、高阶色散的 20,000 组训练样本（输出至 `dataset_20k/`）。
 
-*Note: Establishes physics-constrained training samples under `dataset_20k` and clean evaluation sets.*
-2. **Launch Model Training**
+**Step 2: 模型训练**
+
 ```bash
 python trainDual_20k.py
-python train_SHG_only_20k.py
 
 ```
 
+> 执行双通道（SHG+THG）融合训练。单通道基线对比可运行 `train_SHG_only_20k.py`。（权重保存至 `logs_Dual_20k/`）。
 
-*Note: Runs optimization for both the main model and the ablation baseline. Weights and tracking metrics are directed to respective `logs` directories.*
-3. **Evaluate and Benchmark Performance**
+**Step 3: 模型评估与推断**
+
 ```bash
 python evaluate_Dual_20k.py
-python evaluate_SHG_only.py
 
 ```
 
+> 测算测试集 MSE 分布，并可视化反演电场对比图。
 
-*Note: Measures single-shot inference latency and FPS throughput on local execution targets (CPU/GPU).*
-4. **Run Diagnostics & Compile Figures**
+**Step 4: 故障诊断与鲁棒性验证（可选）**
+
+* `test_robustness.py`: 注入高斯白噪声测试模型抗噪边界。
+* `diagnose_dual_errors.py`: 提取并分析 MSE 离群样本（长尾/极端色散脉冲）。
+* `plot_final_ablation.py`: 绘制消融实验对比图表。
+
+### 3. 项目结构摘要
+
+```text
+E:\FROG_DL_Project
+├── dataset_20k/            # 训练与验证数据集 (SHG/THG/CSV)
+├── dataset_clean_test/     # 纯净测试集
+├── logs_Dual_20k/          # 双通道模型权重 (.pt) 及训练日志
+├── logs_SHG_only_20k/      # 单通道对比模型权重及日志
+├── Model.py                # [核心] 网络架构
+├── Dataholder.py           # [核心] 数据加载管线
+├── FROG_Utils.py           # [核心] 物理算子库
+├── generate_*.py           # 数据集生成脚本
+├── train*.py               # 训练脚本
+├── evaluate_*.py           # 评估脚本
+├── diagnose_*.py           # 误差诊断脚本
+└── *_plots.py              # 学位论文图表绘制脚本
+
+```
+
+---
+
+# English Version
+
+[中文版](https://www.google.com/search?q=%23%E4%B8%AD%E6%96%87%E7%89%88) | [English Version](https://www.google.com/search?q=%23english-version)
+
+---
+
+## ResNet9-FROG Pulse Retrieval System
+
+This project is a deep learning-based phase retrieval system for femtosecond laser pulses using Frequency-Resolved Optical Gating (FROG). It employs a ResNet9 architecture with a dual-channel spatial attention mechanism to directly map 2D time-frequency traces to 1D complex electric fields.
+
+### 1. Core Modules
+
+The underlying logic is encapsulated in three foundational scripts:
+
+* `Model.py`: Defines the neural network topology (ResNet9 backbone, dual-channel attention fusion, and Cartesian regression head).
+* `Dataholder.py`: Handles tensor transformations, dynamic phase anchoring, and DataLoader pipelines.
+* `FROG_Utils.py`: Physics computational engine, including pulse generation, high-order chirp modulation, and anti-aliasing DFT windowing.
+
+### 2. Standard Execution Pipeline
+
+Execute the scripts in the following order to reproduce the workflow:
+
+**Step 1: Dataset Generation**
+
 ```bash
-python diagnose_dual_errors.py
-python plot_final_ablation.py
+python generate_20k_dataset.py
 
 ```
 
+> Generates 20,000 training samples with physical constraints and high-order dispersion (Outputs to `dataset_20k/`).
 
-*Note: Captures and isolates worst-performing statistical outliers while generating vector plots into `final_thesis_plots`.*
+**Step 2: Model Training**
+
+```bash
+python trainDual_20k.py
+
+```
+
+> Initiates dual-channel (SHG+THG) training. For baseline comparison, run `train_SHG_only_20k.py`. (Weights are saved to `logs_Dual_20k/`).
+
+**Step 3: Evaluation & Inference**
+
+```bash
+python evaluate_Dual_20k.py
+
+```
+
+> Calculates MSE distributions on the test set and visualizes the retrieved electric fields.
+
+**Step 4: Diagnostics & Robustness (Optional)**
+
+* `test_robustness.py`: Injects AWGN to evaluate the model's noise resilience.
+* `diagnose_dual_errors.py`: Extracts and analyzes MSE outlier samples (extreme dispersion/multi-peak pulses).
+* `plot_final_ablation.py`: Generates ablation study charts for thesis documentation.
+
+### 3. Directory Structure Summary
+
+```text
+E:\FROG_DL_Project
+├── dataset_20k/            # Training/Validation Dataset (SHG/THG/CSV)
+├── dataset_clean_test/     # Hold-out Test Dataset
+├── logs_Dual_20k/          # Dual-channel weights (.pt) & logs
+├── logs_SHG_only_20k/      # Single-channel baseline weights & logs
+├── Model.py                # [Core] Network Architecture
+├── Dataholder.py           # [Core] Data Loading Pipeline
+├── FROG_Utils.py           # [Core] Physics Operations Library
+├── generate_*.py           # Dataset Generation Scripts
+├── train*.py               # Training Pipelines
+├── evaluate_*.py           # Evaluation Scripts
+├── diagnose_*.py           # Outlier Diagnostic Scripts
+└── *_plots.py              # Thesis Visualization Scripts
+
+```
 
 ```
 
