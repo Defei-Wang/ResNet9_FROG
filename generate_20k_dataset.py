@@ -1,4 +1,4 @@
-# by geminiPRO 20,000组 终极物理完美版 (Jaffray 1:1对标，|E|多峰+平滑相位)
+# 20,000组 (|E|多峰+平滑相位)
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import RegularGridInterpolator
@@ -131,7 +131,7 @@ for idx in tqdm(range(NUM_SAMPLES), desc="Generating 20k Balanced Pulses"):
         chirp_coeffs = (np.random.rand(6) - 0.5) * phase_scales
         applied_phase = np.polyval(chirp_coeffs, t_norm)
         
-# 1. 极其严苛的超高斯窗 (0.22 改为 0.18，物理隔绝边界混叠)
+        # 1. 严苛的高斯窗 (0.22 改为 0.18，物理隔绝边界混叠)
         window = np.exp(-0.5 * (t_fs / (T_WINDOW_FS * 0.18))**10) 
         E = envelope * np.exp(1j * applied_phase) * window
         
@@ -140,7 +140,7 @@ for idx in tqdm(range(NUM_SAMPLES), desc="Generating 20k Balanced Pulses"):
         smooth_phase = applied_phase - applied_phase[peak_idx]
 
         # ========================================================
-        # 🌟 终极防弹验证：提前模拟 Dataholder 的 roll 操作 🌟
+        # 提前模拟 Dataholder 的 roll 操作
         # ========================================================
         E_sim_rolled = np.roll(E, 128 - peak_idx) 
         abs_rolled = np.abs(E_sim_rolled) / np.abs(E_sim_rolled).max()
@@ -148,15 +148,14 @@ for idx in tqdm(range(NUM_SAMPLES), desc="Generating 20k Balanced Pulses"):
         # 检查首尾各 5 个像素的最大值
         boundary_max = max(abs_rolled[:5].max(), abs_rolled[-5:].max())
         
-        # 如果你还不放心，可以取消下面这行的注释，看着它打印
-        #print(f"idx={idx}, boundary_max={boundary_max:.6f}")
+
         
         if boundary_max > 0.03: 
             continue
 
         break
 
-# ... 后面的计算迹线和保存代码保持不变 ...
+    # 计算迹线和保存代码
         
     pulse_data.append([f"{idx:05d}"] + np.real(E).tolist() + np.imag(E).tolist())
     
@@ -188,7 +187,7 @@ for idx in tqdm(range(NUM_SAMPLES), desc="Generating 20k Balanced Pulses"):
     plt.imsave(os.path.join(SHG_DIR, f"shg_{idx:05d}.png"), sh_img, cmap='hot')
     plt.imsave(os.path.join(THG_DIR, f"thg_{idx:05d}.png"), th_img, cmap='hot')
 
-    # 生成前 20 张教科书级别物理预览图
+    # 生成前 20 张物理预览图
     if idx < 20:
         plt.style.use('default')
         fig, axes = plt.subplots(1, 3, figsize=(14, 4), dpi=150)
@@ -237,4 +236,4 @@ df = pd.DataFrame(pulse_data, columns=columns)
 csv_path = os.path.join(DATASET_DIR, "Ere_20k.csv")
 df.to_csv(csv_path, index=False)
 
-print(f"\n✅ 终极版生成完成！包含完美多峰与相位的 20,000 组数据已就绪。")
+print(f"\n✅包含多峰与相位的 20,000 组数据已就绪。")
