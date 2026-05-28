@@ -39,7 +39,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # ==========================================
 # 2. 初始化模型
 # ==========================================
-model = resnet9_with_attention(6, 64, 512).to(device)
+model = resnet9_with_attention(1, 64, 512).to(device)
 model.load_state_dict(torch.load(WEIGHTS_PATH, map_location=device))
 model.eval()
 
