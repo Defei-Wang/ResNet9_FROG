@@ -216,3 +216,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+# ==========================================
+# 物理数据集与训练日志拦截（禁止上传）
+# ==========================================
+dataset_20k/
+logs_Dual_20k/
+logs_SHG_only_20k/
+.idea/
+.vscode/
