@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import RegularGridInterpolator
 from scipy.signal import find_peaks
 from tqdm import tqdm
+from PIL import Image
 import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -184,8 +185,9 @@ for idx in tqdm(range(NUM_SAMPLES), desc="Generating 20k Balanced Pulses"):
     sh_img = (trace_sh_interp * 255).astype(np.uint8)
     th_img = (trace_th_interp * 255).astype(np.uint8)
     
-    plt.imsave(os.path.join(SHG_DIR, f"shg_{idx:05d}.png"), sh_img, cmap='gray')
-    plt.imsave(os.path.join(THG_DIR, f"thg_{idx:05d}.png"), th_img, cmap='gray')
+    # 使用 mode='L' (Luminance) 强制保存为纯正的单通道 8-bit 灰度图
+    Image.fromarray(sh_img, mode='L').save(os.path.join(SHG_DIR, f"shg_{idx:05d}.png"))
+    Image.fromarray(th_img, mode='L').save(os.path.join(THG_DIR, f"thg_{idx:05d}.png"))
 
     # 生成前 20 张物理预览图
     if idx < 20:
@@ -234,6 +236,7 @@ for idx in tqdm(range(NUM_SAMPLES), desc="Generating 20k Balanced Pulses"):
 columns = ['id'] + [f'real_{i}' for i in range(N_GRID)] + [f'imag_{i}' for i in range(N_GRID)]
 df = pd.DataFrame(pulse_data, columns=columns)
 csv_path = os.path.join(DATASET_DIR, "Ere_20k.csv")
-df.to_csv(csv_path, index=False)
+# 强制保留 8 位有效数字的科学计数法，避免量化噪声
+df.to_csv(csv_path, index=False, float_format='%.8e')
 
 print(f"\n✅包含多峰与相位的 20,000 组数据已就绪。")
