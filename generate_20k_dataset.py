@@ -6,10 +6,15 @@ from scipy.signal import find_peaks
 from tqdm import tqdm
 from PIL import Image
 import os
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
 import pandas as pd
+import random
+
+# ==========================================
+# 锁定全局随机种子，确保答辩时数据 100% 可复现
+# ==========================================
+SEED = 42
+np.random.seed(SEED)
+random.seed(SEED)
 
 # ----------------------------- 配置参数 -----------------------------
 # 强制指定项目根目录，不再依赖终端当前位置
