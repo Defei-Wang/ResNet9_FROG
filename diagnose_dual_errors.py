@@ -34,7 +34,9 @@ os.makedirs(BAD_SAMPLES_DIR, exist_ok=True)
 # 2. 加载模型与数据集
 # ==========================================
 print(f"正在准备诊断工具... (阈值: MSE > {ERROR_THRESHOLD})")
-model = resnet9_with_attention(6, 64, 512).to(device)
+
+# 【修复 1】：将输入通道从 6 改为 2，严格对齐训练时的维度
+model = resnet9_with_attention(2, 64, 512).to(device)
 model.load_state_dict(torch.load(WEIGHTS_PATH, map_location=device, weights_only=True))
 model.eval()
 
@@ -75,9 +77,9 @@ with torch.no_grad():
                 fig = plt.figure(figsize=(15, 10))
                 fig.suptitle(f'Failure Mode Analysis - Sample: {filename[0]} | MSE: {mse:.6f}', fontsize=16, fontweight='bold')
                 
-                # 获取图像数据用于显示
-                shg_img = inputs[0, 0, :, :].numpy()
-                thg_img = inputs[0, 3, :, :].numpy()
+                # 【修复 2】：现在总共只有 2 个通道，SHG 在索引 0，THG 在索引 1
+                shg_img = inputs[0, 0, :, :].cpu().numpy()
+                thg_img = inputs[0, 1, :, :].cpu().numpy()
                 
                 # 子图 1: FROG 迹线图
                 ax1 = plt.subplot(2, 2, 1)
@@ -123,9 +125,7 @@ with torch.no_grad():
                 
                 plt.tight_layout(rect=[0, 0.03, 1, 0.95])
                 
-
-
-                # 修改后：
+                # 保存图像
                 save_name = os.path.join(BAD_SAMPLES_DIR, f'BadSample_MSE_{mse:.5f}_{filename[0]}.png')
                 plt.savefig(save_name)
                 print(f"   📸 诊断图已保存: {save_name}")
