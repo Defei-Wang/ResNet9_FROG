@@ -61,7 +61,7 @@ E:\FROG_DL_Project
 ```
 ### 5. 参考文献与学术归属 (References & Acknowledgments)
 本项目双谐波（SHG + THG）联合输入表征与反演策略的思想受到了以下前沿文献及开源工作的启发：
-- **Paper**: Jaffray et al., "Machine-learning-assisted dual harmonic generation FROG for enhanced ultrafast pulse recovery," *Optics Express / Relevant Journal*, 2024.
+- **Paper**: Jaffray W, Guo Z, Di Falco A, et al. Machine-learning-assisted dual harmonic generation FROG for enhanced ultrafast pulse recovery[J/OL]. Machine Learning: Science and Technology, 2024, 5(4): 045074. http://dx.doi.org/10.1088/2632-2153/ad 9f21.
 - **Related Project**: Reference concept from `https://github.com/ZooBeasts/Machine-learning-for-ultrafast-laser-characterization-FROG`.
 
 **本项目的主要独立实现与工程增量 (Our Specific Contributions)**:
