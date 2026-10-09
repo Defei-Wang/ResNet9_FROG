@@ -59,7 +59,15 @@ E:\FROG_DL_Project
 ├── diagnose_*.py           # 边界误差诊断模块
 └── *_plots.py              # 论文图表绘制模块
 ```
+### 5. 参考文献与学术归属 (References & Acknowledgments)
+本项目双谐波（SHG + THG）联合输入表征与反演策略的思想受到了以下前沿文献及开源工作的启发：
+- **Paper**: Jaffray et al., "Machine-learning-assisted dual harmonic generation FROG for enhanced ultrafast pulse recovery," *Optics Express / Relevant Journal*, 2024.
+- **Related Project**: Reference concept from `https://github.com/ZooBeasts/Machine-learning-for-ultrafast-laser-characterization-FROG`.
 
+**本项目的主要独立实现与工程增量 (Our Specific Contributions)**:
+1. **网络与表征重构**: 采用轻量化双分支空间注意力 ResNet9 骨干，在直角坐标系下直接端到端回归复电场实部与虚部序列，消除极坐标回归的相位不连续性。
+2. **物理边界防御**: 自研 10 阶超高斯滤波窗与 Pre-roll 边界校验算法，有效消除离散傅里叶变换的周期卷积边界伪影。
+3. **低算力边缘部署**: 实现 CPU 端 55ms 低延迟推理，并开发了针对极弱信号区的物理置信度 NaN 动态掩膜后处理工具。
 ---
 
 ## English Version
