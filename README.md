@@ -125,3 +125,7 @@ E:\FROG_DL_Project
 ├── diagnose_*.py           # Boundary Error Diagnostic Modules
 └── *_plots.py              # Thesis Visualization Scripts
 ```
+### 5. References & Acknowledgments
+The concept behind the dual-harmonic (SHG + THG) combined input characterization and inversion strategy for this project was inspired by the following cutting-edge literature and open-source work：
+- **Paper**: Jaffray W, Guo Z, Di Falco A, et al. Machine-learning-assisted dual harmonic generation FROG for enhanced ultrafast pulse recovery[J/OL]. Machine Learning: Science and Technology, 2024, 5(4): 045074. http://dx.doi.org/10.1088/2632-2153/ad 9f21.
+- **Related Project**: Reference concept from `https://github.com/ZooBeasts/Machine-learning-for-ultrafast-laser-characterization-FROG`.
